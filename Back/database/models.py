@@ -8,7 +8,7 @@ class Person(Base):
     id = Column(Integer, primary_key=True, autoincrement=True)
     name = Column(String)
     email = Column(String)
-    #numbers = relationship('Number', backref='person')
+    numbers = relationship('Number', backref='person', lazy='subquery')
 
 class Number(Base):
     __tablename__ = 'number'
