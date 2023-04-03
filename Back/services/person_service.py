@@ -5,12 +5,16 @@ from sqlalchemy.future import select
 from database.models import Person, Number
 from database.connection import async_session
 
+from typing import List
 
 class PersonService:
-    async def create_person(name: str, email: str):
+    async def create_person(name: str, email: str) -> int:
         async with async_session() as session:
-            session.add(Person(name=name, email=email))
+            _add = Person(name=name, email=email)
+            session.add(_add)
             await session.commit()
+            await session.refresh(_add)
+            return _add.id
 
     async def delete_person(person_id: int):
         async with async_session() as session:

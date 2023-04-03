@@ -1,7 +1,7 @@
 from typing import Union
 from fastapi import APIRouter, FastAPI
 
-from controllers.person_controller import person_router, number_router
+from controllers.person_controller import person_router, number_router, contact_router
 
 app = FastAPI()
 router = APIRouter()
@@ -16,3 +16,4 @@ def read_root():
 app.include_router(prefix='/first', router = router)
 app.include_router(person_router)
 app.include_router(number_router)
+app.include_router(contact_router)

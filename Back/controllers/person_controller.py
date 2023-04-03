@@ -1,12 +1,13 @@
 from fastapi import APIRouter, HTTPException
 
-from database.schemas import PersonCreateInput, StandardOutput, ErrorOutput, UserListOutput, NumberCreateInput
+from database.schemas import PersonCreateInput, NumberCreateInput, ContactCreateInput, StandardOutput, ErrorOutput, UserListOutput
 from services.person_service import PersonService, NumberService
 
 from typing import List
 
 person_router = APIRouter(prefix='/person')
 number_router = APIRouter(prefix='/number')
+contact_router = APIRouter(prefix='/contact')
 
 @person_router.post('/create', response_model=StandardOutput, responses={400: {'model': ErrorOutput}})
 async def person_create(person_input: PersonCreateInput):
@@ -45,6 +46,19 @@ async def number_create(number_input: NumberCreateInput):
 async def person_delete(number_id: int):
     try:
          await NumberService.delete_number(number_id=number_id)
+         return StandardOutput(message='Ok')
+    except Exception as error:
+         raise HTTPException(400, detail=str(error))
+
+
+@contact_router.post('/create', response_model=StandardOutput, responses={400: {'model': ErrorOutput}})
+async def contact_create(contact_input: ContactCreateInput):
+    try:
+         person_id = await PersonService.create_person(email=contact_input.email, name=contact_input.name)
+         
+         for n in contact_input.numbers:
+              await NumberService.create_number(person_id=person_id, reference=n.reference, tell=n.tell)
+
          return StandardOutput(message='Ok')
     except Exception as error:
          raise HTTPException(400, detail=str(error))

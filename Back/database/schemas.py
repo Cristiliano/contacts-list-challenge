@@ -1,14 +1,20 @@
 from pydantic import BaseModel
 from typing import List
 
-class PersonCreateInput(BaseModel):
+class Person(BaseModel):
     name: str
     email: str
 
-class NumberCreateInput(BaseModel):
+class Number(BaseModel):
     tell: str
     reference: str
     person_id: int
+
+class PersonCreateInput(Person):
+    pass
+
+class NumberCreateInput(Number):
+    pass
 
 class StandardOutput(BaseModel):
     message: str
@@ -29,6 +35,16 @@ class UserListOutput(BaseModel):
     id: int
     name: str
     numbers: List[Number]
+
+    class Config:
+        orm_mode = True
+
+class ContactNumberList(BaseModel):
+    tell: str
+    reference: str
+
+class ContactCreateInput(Person):
+    numbers: List[ContactNumberList]
 
     class Config:
         orm_mode = True
